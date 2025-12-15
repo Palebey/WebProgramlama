@@ -1,7 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using web.Data; // Proje ismine dikkat
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+// --- BÝZÝM EKLEDÝÐÝMÝZ KISIM BAÞLANGIÇ ---
+// Veritabaný baðlantýsýný sisteme tanýtýyoruz (SQL Server)
+builder.Services.AddDbContext<SporSalonuDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SporSalonuConnection")));
+// --- BÝZÝM EKLEDÝÐÝMÝZ KISIM BÝTÝÞ ---
 
 var app = builder.Build();
 
