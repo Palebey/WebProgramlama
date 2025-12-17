@@ -1,22 +1,74 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+/* GENEL AYARLAR */
+:root {
+    --ana-arkaplan: #0f172a; /* Çok koyu lacivert */
+    --kart-arkaplan: #1e293b; /* Kartlar için biraz daha açýk */
+    --yazi-rengi: #ffffff; /* Bembeyaz yazý */
+    --primary-color: #3b82f6; /* Mavi */
+    --secondary-color: #8b5cf6; /* Mor */
 }
 
 body {
-  margin-bottom: 60px;
+    background-color: var(--ana-arkaplan) !important;
+    color: var(--yazi-rengi) !important;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+/* OKUNABÝLÝRLÝK AYARLARI (Sorunu çözen kýsým) */
+p, h1, h2, h3, h4, h5, h6, span, div, li {
+    color: #ffffff !important; /* Tüm yazýlarý beyaz yap */
+}
+
+.text-muted {
+    color: #cbd5e1 !important; /* Silik yazýlarý (tarih vb.) açýk gri yap */
+}
+
+.text-primary {
+    color: #60a5fa !important; /* Mavileri daha açýk mavi yap ki okunsun */
+}
+
+/* KARTLAR VE KUTULAR */
+.card, .feature-card, .list-group-item {
+    background-color: var(--kart-arkaplan);
+    border: 1px solid #334155;
+    color: #ffffff;
+}
+
+/* NAVBAR (MENÜ) */
+.navbar {
+    background-color: rgba(15, 23, 42, 0.95) !important;
+    border-bottom: 1px solid #334155;
+}
+
+.nav-link {
+    color: #e2e8f0 !important;
+}
+
+    .nav-link:hover {
+        color: #3b82f6 !important;
+    }
+
+/* FORM GÝRÝÞLERÝ (Inputlar patlamasýn diye) */
+.form-control, .form-select {
+    background-color: #1e293b !important;
+    border: 1px solid #475569 !important;
+    color: #ffffff !important;
+}
+
+    .form-control::placeholder {
+        color: #94a3b8 !important;
+    }
+
+/* FOOTER */
+footer {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border-top: 1px solid #334155;
+}
+
+/* Gradient Yazýlar */
+.text-gradient {
+    background: linear-gradient(to right, #60a5fa, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block; /* Önemli */
 }

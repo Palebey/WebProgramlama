@@ -7355,11 +7355,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Akif\\Desktop\\web\\web.csproj",
+      "projectUniqueName": "C:\\Users\\Akif\\Desktop\\web2\\web.csproj",
       "projectName": "web",
-      "projectPath": "C:\\Users\\Akif\\Desktop\\web\\web.csproj",
+      "projectPath": "C:\\Users\\Akif\\Desktop\\web2\\web.csproj",
       "packagesPath": "C:\\Users\\Akif\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Akif\\Desktop\\web\\obj\\",
+      "outputPath": "C:\\Users\\Akif\\Desktop\\web2\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
