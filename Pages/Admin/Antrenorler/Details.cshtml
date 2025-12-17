@@ -1,0 +1,49 @@
+﻿@page
+@model web.Pages.Admin.Antrenorler.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Antrenor</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Antrenor.AdSoyad)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Antrenor.AdSoyad)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Antrenor.Uzmanlik)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Antrenor.Uzmanlik)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Antrenor.MesaiBaslangic)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Antrenor.MesaiBaslangic)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Antrenor.MesaiBitis)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Antrenor.MesaiBitis)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Antrenor.SporSalonu)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Antrenor.SporSalonu.Id)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Antrenor.Id">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

@@ -1,0 +1,66 @@
+﻿@page
+@model web.Pages.Admin.SporSalonlari.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SporSalonu[0].Ad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SporSalonu[0].Aciklama)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SporSalonu[0].Hizmetler)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SporSalonu[0].AcilisSaati)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SporSalonu[0].KapanisSaati)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SporSalonu[0].UyelikUcreti)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.SporSalonu) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ad)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Aciklama)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Hizmetler)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AcilisSaati)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.KapanisSaati)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UyelikUcreti)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

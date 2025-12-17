@@ -1,0 +1,122 @@
+﻿@page "{antrenorId:int}"
+@model web.Pages.RandevuIslemleri.OlusturModel
+@{
+    ViewData["Title"] = "Randevu Al";
+}
+
+<div class="container mt-5">
+    <div class="card bg-dark text-white border-secondary">
+        <div class="card-header border-secondary">
+            <h3 class="card-title">Randevu Oluştur</h3>
+        </div>
+        <div class="card-body">
+            <h5 class="text-warning mb-4">
+                Eğitmen: @Model.SecilenAntrenor.AdSoyad
+            </h5>
+
+            <form method="post" id="randevuForm">
+                <input type="hidden" asp-for="Randevu.AntrenorId" id="AntrenorId" value="@Model.SecilenAntrenor.Id" />
+
+                <input type="hidden" asp-for="Randevu.TarihSaat" id="SecilenTarihSaat" />
+
+                <div class="mb-4">
+                    <label class="form-label">Tarih Seçiniz:</label>
+                    <input type="date" id="tarihSecimi" class="form-control"
+                           min="@DateTime.Now.ToString("yyyy-MM-dd")"
+                           value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Uygun Saatler:</label>
+                    <div id="saatContainer" class="d-flex flex-wrap gap-2">
+                        <div class="alert alert-info w-100">Yükleniyor...</div>
+                    </div>
+                    <span asp-validation-for="Randevu.TarihSaat" class="text-danger mt-2 d-block"></span>
+                </div>
+
+                <div class="d-flex gap-3 mb-4 small">
+                    <div class="d-flex align-items-center"><div class="badge bg-success me-1">&nbsp;</div> Müsait</div>
+                    <div class="d-flex align-items-center"><div class="badge bg-warning text-dark me-1">&nbsp;</div> Onay Bekliyor</div>
+                    <div class="d-flex align-items-center"><div class="badge bg-danger me-1">&nbsp;</div> Dolu</div>
+                    <div class="d-flex align-items-center"><div class="badge bg-secondary me-1">&nbsp;</div> Geçmiş</div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" id="btnGonder" class="btn btn-primary" disabled>
+                        Randevuyu Tamamla
+                    </button>
+                    <a href="javascript:history.back()" class="btn btn-outline-light">İptal</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tarihInput = document.getElementById('tarihSecimi');
+        const antrenorId = document.getElementById('AntrenorId').value;
+
+        // İlk açılışta bugünün saatlerini getir
+        saatleriGetir(tarihInput.value, antrenorId);
+
+        // Tarih değişince tekrar getir
+        tarihInput.addEventListener('change', function() {
+            saatleriGetir(this.value, antrenorId);
+        });
+    });
+
+    function saatleriGetir(tarih, antrenorId) {
+        const container = document.getElementById('saatContainer');
+        const btnGonder = document.getElementById('btnGonder');
+        const gizliInput = document.getElementById('SecilenTarihSaat');
+
+        container.innerHTML = '<div class="spinner-border text-light" role="status"></div> Yükleniyor...';
+        btnGonder.disabled = true;
+        gizliInput.value = ""; // Tarih değişince seçimi sıfırla
+
+        // Backend'deki "OnGetSaatleriGetir" metoduna istek atıyoruz
+        fetch(`?handler=SaatleriGetir&antrenorId=${antrenorId}&tarih=${tarih}`)
+            .then(response => response.json())
+            .then(data => {
+                container.innerHTML = '';
+
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<div class="alert alert-warning">Bu tarihte uygun saat bulunamadı.</div>';
+                    return;
+                }
+
+                data.forEach(slot => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = `btn ${slot.renk} px-4 py-2`;
+                    btn.innerText = slot.saat;
+
+                    if (!slot.tiklanabilir) {
+                        btn.disabled = true;
+                        btn.title = slot.durumKod;
+                    } else {
+                        btn.onclick = function() {
+                            // Önceki seçili butonu temizle
+                            document.querySelectorAll('#saatContainer .btn').forEach(b => b.classList.remove('border', 'border-3', 'border-white'));
+
+                            // Seçili olduğunu belli et
+                            this.classList.add('border', 'border-3', 'border-white');
+
+                            // Gizli inputa tam tarihi yaz
+                            const tamTarih = `${tarih}T${slot.saat}:00`;
+                            gizliInput.value = tamTarih;
+
+                            // Kaydet butonunu aktif et
+                            btnGonder.disabled = false;
+                        };
+                    }
+                    container.appendChild(btn);
+                });
+            })
+            .catch(err => {
+                container.innerHTML = '<div class="alert alert-danger">Saatler yüklenirken hata oluştu.</div>';
+                console.error(err);
+            });
+    }
+</script>

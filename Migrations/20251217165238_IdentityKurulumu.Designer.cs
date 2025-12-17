@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using web.Data;
 
@@ -11,9 +12,11 @@ using web.Data;
 namespace web.Migrations
 {
     [DbContext(typeof(SporSalonuDbContext))]
-    partial class SporSalonuDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251217165238_IdentityKurulumu")]
+    partial class IdentityKurulumu
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -232,16 +235,14 @@ namespace web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan>("MesaiBaslangic")
-                        .HasColumnType("time");
-
-                    b.Property<TimeSpan>("MesaiBitis")
-                        .HasColumnType("time");
+                    b.Property<string>("CalismaSaatleri")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SporSalonuId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Uzmanlik")
+                    b.Property<string>("UzmanlikAlani")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -252,37 +253,6 @@ namespace web.Migrations
                     b.ToTable("Antrenorler");
                 });
 
-            modelBuilder.Entity("web.Models.Randevu", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AntrenorId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Durum")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("TarihSaat")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UyeId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AntrenorId");
-
-                    b.HasIndex("UyeId");
-
-                    b.ToTable("Randevular");
-                });
-
             modelBuilder.Entity("web.Models.SporSalonu", b =>
                 {
                     b.Property<int>("Id")
@@ -291,26 +261,21 @@ namespace web.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Aciklama")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<TimeSpan>("AcilisSaati")
-                        .HasColumnType("time");
-
                     b.Property<string>("Ad")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Hizmetler")
+                    b.Property<string>("Adres")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan>("KapanisSaati")
-                        .HasColumnType("time");
+                    b.Property<string>("CalismaSaatleri")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("UyelikUcreti")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("Telefon")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -371,41 +336,12 @@ namespace web.Migrations
             modelBuilder.Entity("web.Models.Antrenor", b =>
                 {
                     b.HasOne("web.Models.SporSalonu", "SporSalonu")
-                        .WithMany("Antrenorler")
+                        .WithMany()
                         .HasForeignKey("SporSalonuId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("SporSalonu");
-                });
-
-            modelBuilder.Entity("web.Models.Randevu", b =>
-                {
-                    b.HasOne("web.Models.Antrenor", "Antrenor")
-                        .WithMany("Randevular")
-                        .HasForeignKey("AntrenorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Uye")
-                        .WithMany()
-                        .HasForeignKey("UyeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Antrenor");
-
-                    b.Navigation("Uye");
-                });
-
-            modelBuilder.Entity("web.Models.Antrenor", b =>
-                {
-                    b.Navigation("Randevular");
-                });
-
-            modelBuilder.Entity("web.Models.SporSalonu", b =>
-                {
-                    b.Navigation("Antrenorler");
                 });
 #pragma warning restore 612, 618
         }

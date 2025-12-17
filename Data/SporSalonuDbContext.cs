@@ -1,16 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
-using web.Models; // "web" yerine proje ismini yaz
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore; // BU SATIR EKLENMELİ
+using Microsoft.EntityFrameworkCore;
+using web.Models;
 
-namespace web.Data // "web" yerine proje ismini yaz
+namespace web.Data
 {
-    public class SporSalonuDbContext : DbContext
+    // DİKKAT: Burası artık "DbContext" değil "IdentityDbContext" olmalı
+    public class SporSalonuDbContext : IdentityDbContext
     {
-        public SporSalonuDbContext(DbContextOptions<SporSalonuDbContext> options) : base(options)
+        public SporSalonuDbContext(DbContextOptions<SporSalonuDbContext> options)
+            : base(options)
         {
         }
 
-        // Veritabanındaki "SporSalonlari" tablosunu temsil eder
+        // Senin mevcut tabloların aynen kalıyor
         public DbSet<SporSalonu> SporSalonlari { get; set; }
         public DbSet<Antrenor> Antrenorler { get; set; }
+        public DbSet<Randevu> Randevular { get; set; }
     }
 }

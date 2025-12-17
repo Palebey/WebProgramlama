@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using web.Data;
 
@@ -11,9 +12,11 @@ using web.Data;
 namespace web.Migrations
 {
     [DbContext(typeof(SporSalonuDbContext))]
-    partial class SporSalonuDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251217173141_SporSalonuGuncelleme")]
+    partial class SporSalonuGuncelleme
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -232,11 +235,9 @@ namespace web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan>("MesaiBaslangic")
-                        .HasColumnType("time");
-
-                    b.Property<TimeSpan>("MesaiBitis")
-                        .HasColumnType("time");
+                    b.Property<string>("MusaitlikSaatleri")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SporSalonuId")
                         .HasColumnType("int");
@@ -295,19 +296,17 @@ namespace web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan>("AcilisSaati")
-                        .HasColumnType("time");
-
                     b.Property<string>("Ad")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CalismaSaatleri")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Hizmetler")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<TimeSpan>("KapanisSaati")
-                        .HasColumnType("time");
 
                     b.Property<decimal>("UyelikUcreti")
                         .HasColumnType("decimal(18,2)");

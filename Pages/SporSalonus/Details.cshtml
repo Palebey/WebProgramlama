@@ -1,0 +1,75 @@
+﻿@page
+@model web.Pages.SporSalonus.DetailsModel
+@{
+    ViewData["Title"] = "Salon Detayı";
+}
+
+<div class="container mt-5">
+    <div class="p-5 mb-5 bg-dark border border-secondary rounded-3 position-relative overflow-hidden">
+        <div class="position-relative" style="z-index: 2;">
+            <h1 class="display-4 fw-bold text-white">@Model.SporSalonu.Ad</h1>
+            <p class="col-md-8 fs-5 text-secondary">@Model.SporSalonu.Aciklama</p>
+
+            <div class="d-flex gap-3 mt-4">
+                <div class="d-flex align-items-center text-warning">
+                    <span class="material-symbols-outlined me-2">schedule</span>
+                    <span>@Model.SporSalonu.AcilisSaati.ToString(@"hh\:mm") - @Model.SporSalonu.KapanisSaati.ToString(@"hh\:mm")</span>
+                </div>
+                <div class="d-flex align-items-center text-success">
+                    <span class="material-symbols-outlined me-2">payments</span>
+                    <span>@Model.SporSalonu.UyelikUcreti ₺ / Aylık</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex align-items-center mb-4 border-bottom border-secondary pb-2">
+        <span class="material-symbols-outlined fs-2 text-warning me-2">groups</span>
+        <h3 class="text-white m-0">Eğitmen Kadrosu</h3>
+    </div>
+
+    <div class="row">
+        @if (Model.SporSalonu.Antrenorler != null && Model.SporSalonu.Antrenorler.Any())
+        {
+            @foreach (var antrenor in Model.SporSalonu.Antrenorler)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card bg-dark text-white border-secondary h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="card-title fw-bold mb-1">@antrenor.AdSoyad</h5>
+                                    <span class="badge bg-info text-dark">@antrenor.Uzmanlik</span>
+                                </div>
+                                <span class="material-symbols-outlined text-secondary fs-1">fitness_center</span>
+                            </div>
+
+                            <div class="small text-secondary mb-3">
+                                <i class="bi bi-clock"></i> Mesai:
+                                <span class="text-white">@antrenor.MesaiBaslangic.ToString(@"hh\:mm") - @antrenor.MesaiBitis.ToString(@"hh\:mm")</span>
+                            </div>
+
+                            <a asp-page="/RandevuIslemleri/Olustur" asp-route-antrenorId="@antrenor.Id" class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2">
+                                <span class="material-symbols-outlined fs-5">calendar_add_on</span>
+                                Randevu Al
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                    <span class="material-symbols-outlined me-2">info</span>
+                    <div>Bu salona henüz eğitmen atanmamış.</div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="mt-4">
+        <a asp-page="./Index" class="btn btn-outline-light">← Listeye Dön</a>
+    </div>
+</div>

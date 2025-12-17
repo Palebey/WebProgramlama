@@ -1,0 +1,43 @@
+﻿@page
+@model web.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Giriş Yap</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="mb-3">
+                        <label>Email Adresi</label>
+                        <input asp-for="Input.Email" class="form-control" placeholder="Email adresiniz" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Şifre</label>
+                        <input asp-for="Input.Password" type="password" class="form-control" placeholder="Şifreniz" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Giriş Yap</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <small>Hesabın yok mu? <a asp-page="./Register">Hemen Üye Ol</a></small>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

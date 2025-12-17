@@ -1,19 +1,28 @@
-﻿namespace web.Models // Burayı kendi proje isminle kontrol et
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace web.Models
 {
     public class Antrenor
     {
         public int Id { get; set; }
+        public string AdSoyad { get; set; }
+        public string Uzmanlik { get; set; }
 
-        public string AdSoyad { get; set; } = string.Empty;
+        // string MusaitlikSaatleri yerine:
+        [Display(Name = "Mesai Başlangıç")]
+        [DataType(DataType.Time)]
+        public TimeSpan MesaiBaslangic { get; set; } // Örn: 10:00
 
-        // "Kas geliştirme, Yoga vb." gibi uzmanlıklar [cite: 16]
-        public string UzmanlikAlani { get; set; } = string.Empty;
+        [Display(Name = "Mesai Bitiş")]
+        [DataType(DataType.Time)]
+        public TimeSpan MesaiBitis { get; set; } // Örn: 18:00
 
-       // Müsaitlik saatleri [cite: 17]
-        public string CalismaSaatleri { get; set; } = string.Empty;
-
-        // İlişki: Bir antrenör bir salonda çalışır [cite: 15]
         public int SporSalonuId { get; set; }
+
+        [ForeignKey("SporSalonuId")]
         public SporSalonu? SporSalonu { get; set; }
+
+        public ICollection<Randevu>? Randevular { get; set; }
     }
 }

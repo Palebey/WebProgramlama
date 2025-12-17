@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.22" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.22" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.22">
       <PrivateAssets>all</PrivateAssets>
@@ -16,8 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Admin\Antrenorler\" />
-    <Folder Include="Pages\Admin\SporSalonlari\" />
+    <Folder Include="Controller\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 

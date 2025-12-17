@@ -1,0 +1,52 @@
+﻿@page
+@model web.Pages.SporSalonus.IndexModel
+@{
+    ViewData["Title"] = "Spor Salonları";
+}
+
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-white">Spor Salonlarını Keşfet</h1>
+        <p class="lead text-secondary">Size en uygun salonu bulun ve antrenörlerimizle tanışın.</p>
+    </div>
+
+    <div class="row">
+        @foreach (var item in Model.SporSalonu)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 bg-dark border border-secondary text-white shadow">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h3 class="card-title fw-bold text-warning mb-0">@item.Ad</h3>
+                            <span class="badge bg-primary">@item.UyelikUcreti ₺/Ay</span>
+                        </div>
+
+                        <p class="card-text text-light opacity-75 small">@item.Aciklama</p>
+
+                        <div class="mt-3 border-top border-secondary pt-3">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="material-symbols-outlined me-2 fs-6 text-warning">schedule</span>
+                                <small>@item.AcilisSaati.ToString(@"hh\:mm") - @item.KapanisSaati.ToString(@"hh\:mm")</small>
+                            </div>
+
+                            <div class="mb-3">
+                                @if (!string.IsNullOrEmpty(item.Hizmetler))
+                                {
+                                    @foreach (var h in item.Hizmetler.Split(','))
+                                    {
+                                        <span class="badge bg-secondary text-light me-1 mb-1">@h.Trim()</span>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 pb-4">
+                        <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-outline-warning w-100 stretched-link">
+                            Salon Detayı & Antrenörler
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
