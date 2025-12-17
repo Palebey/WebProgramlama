@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity; // Identity kütüphanesi eklendi
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using web.Data;
 
@@ -11,12 +11,12 @@ builder.Services.AddDbContext<SporSalonuDbContext>(options =>
 // 2. Identity Servislerinin Eklenmesi (Giriþ/Çýkýþ ve Rol Yönetimi)
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
-    // Ödev için basit þifre kurallarý (Karmaþýk þifre zorunluluðunu kaldýrýyoruz)
+    // Ödev için basit þifre kurallarý
     options.Password.RequireDigit = false;
     options.Password.RequireLowercase = false;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
-    options.Password.RequiredLength = 3; // "sau" þifresi 3 karakter olduðu için
+    options.Password.RequiredLength = 3;
 
     options.User.RequireUniqueEmail = true;
 })
@@ -26,22 +26,26 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 // 3. Giriþ Yapýlmamýþsa Yönlendirme Ayarlarý
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Account/Login"; // Giriþ sayfasý yolu
-    options.AccessDeniedPath = "/Account/AccessDenied"; // Yetkisiz eriþim sayfasý
+    options.LoginPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
 // 4. Razor Pages Ayarlarý
 builder.Services.AddRazorPages(options =>
 {
     // Admin klasörüne sadece giriþ yapmýþ olanlar eriþebilir.
-    // Ýleride burayý sadece "Admin" rolüne sahip olanlar olarak güncelleyebiliriz.
     options.Conventions.AuthorizeFolder("/Admin");
 });
+
+// --- YENÝ EKLENEN KISIM: Controller Servisi ---
+// REST API (RandevuApiController) kullanabilmek için bu servis þarttýr.
+builder.Services.AddControllers();
+// ---------------------------------------------
+builder.Services.AddHttpClient<web.Services.GeminiService>();
 
 var app = builder.Build();
 
 // --- ÖDEV GEREKSÝNÝMÝ: OTOMATÝK ADMÝN VE ROL OLUÞTURMA ---
-// Proje her baþladýðýnda bu kýsým çalýþýr, veritabanýnda Admin yoksa ekler.
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -50,7 +54,6 @@ using (var scope = app.Services.CreateScope())
         var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-        // Rolleri oluþtur (Admin ve Uye)
         string[] roles = { "Admin", "Uye" };
         foreach (var role in roles)
         {
@@ -60,26 +63,22 @@ using (var scope = app.Services.CreateScope())
             }
         }
 
-        // Admin Kullanýcýsýný Oluþtur
         var adminEmail = "b221210003@sakarya.edu.tr";
         var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
         if (adminUser == null)
         {
             var newAdmin = new IdentityUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
-            // Þifre: sau
             var result = await userManager.CreateAsync(newAdmin, "sau");
 
             if (result.Succeeded)
             {
-                // Kullanýcýya Admin rolünü ata
                 await userManager.AddToRoleAsync(newAdmin, "Admin");
             }
         }
     }
     catch (Exception ex)
     {
-        // Hata olursa konsola yazdýr
         Console.WriteLine("Roller veya Admin oluþturulurken hata: " + ex.Message);
     }
 }
@@ -97,10 +96,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// 5. ÖNEMLÝ: Authentication (Kimlik Doðrulama) Authorization'dan ÖNCE gelmelidir.
+// 5. ÖNEMLÝ: Authentication Authorization'dan ÖNCE gelmelidir.
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapRazorPages();
+// Controller ve Razor Pages Map iþlemleri
+app.MapControllers(); // API rotalarý için
+app.MapRazorPages();  // Sayfa rotalarý için
 
 app.Run();

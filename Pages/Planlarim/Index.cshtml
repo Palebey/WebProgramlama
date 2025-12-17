@@ -1,0 +1,109 @@
+﻿@page
+@model web.Pages.Planlarim.IndexModel
+@{
+    ViewData["Title"] = "Planlarım";
+}
+
+<div class="container mt-5">
+    <h1 class="text-white mb-4">Kişisel Kontrol Paneli</h1>
+
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card bg-dark border-secondary text-white h-100">
+                <div class="card-header border-secondary d-flex justify-content-between align-items-center">
+                    <h5 class="m-0"><i class="bi bi-calendar-check"></i> Randevularım</h5>
+                    <small class="text-muted">Canlı Veri (API)</small>
+                </div>
+                <div class="card-body">
+                    <div id="randevuListesi">
+                        <div class="text-center text-muted">
+                            <div class="spinner-border spinner-border-sm" role="status"></div> Yükleniyor...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            @if (Model.MevcutPlan != null)
+            {
+                <div class="card bg-dark border-secondary text-white h-100">
+                    <div class="card-header border-secondary">
+                        <h5 class="m-0 text-warning"><i class="bi bi-robot"></i> Yapay Zeka Destekli Planın</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                @if (!string.IsNullOrEmpty(Model.MevcutPlan.ResimUrl))
+                                {
+                                    <img src="@Model.MevcutPlan.ResimUrl" class="img-fluid rounded border border-warning shadow" alt="Hedef Vücut">
+                                    <p class="small text-muted text-center mt-2">6 Ay Sonraki Hedef Görüntü (AI)</p>
+                                }
+                            </div>
+                            <div class="col-md-8">
+                                <h6>Kişisel Bilgiler:</h6>
+                                <span class="badge bg-secondary">@Model.MevcutPlan.Boy cm</span>
+                                <span class="badge bg-secondary">@Model.MevcutPlan.Kilo kg</span>
+                                <span class="badge bg-info text-dark">@Model.MevcutPlan.Hedef</span>
+
+                                <hr class="border-secondary" />
+
+                                <h6>Antrenman & Beslenme Tavsiyesi:</h6>
+                                <div class="bg-black bg-opacity-25 p-3 rounded" style="max-height: 300px; overflow-y: auto; white-space: pre-wrap;">
+                                    @Model.MevcutPlan.ProgramMetni
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer border-secondary text-end">
+                        <small class="text-muted">Oluşturulma: @Model.MevcutPlan.OlusturulmaTarihi.ToString("dd.MM.yyyy")</small>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-secondary text-center p-5">
+                    <h3>Henüz bir AI Planı Oluşturmadın!</h3>
+                    <p>Anasayfadan vücut bilgilerini girerek sana özel programı ve gelecek simülasyonunu oluşturabilirsin.</p>
+                    <a asp-page="/Index" class="btn btn-warning">Hemen Oluştur</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch('/api/RandevuApi/GetMyAppointments')
+            .then(response => response.json())
+            .then(data => {
+                const liste = document.getElementById('randevuListesi');
+                liste.innerHTML = ""; // Yükleniyor yazısını sil
+
+                if (data.length === 0) {
+                    liste.innerHTML = '<div class="alert alert-info">Henüz randevunuz yok.</div>';
+                    return;
+                }
+
+                // Dinamik tablo oluşturma
+                let html = `<table class="table table-dark table-hover table-sm">
+                                <thead><tr><th>Tarih</th><th>Antrenör</th><th>Durum</th></tr></thead>
+                                <tbody>`;
+
+                data.forEach(item => {
+                    html += `<tr>
+                                <td>${item.tarih}</td>
+                                <td>${item.antrenor}</td>
+                                <td><span class="badge bg-${item.durumRenk}">${item.durum}</span></td>
+                             </tr>`;
+                });
+
+                html += `</tbody></table>`;
+                liste.innerHTML = html;
+            })
+            .catch(err => {
+                document.getElementById('randevuListesi').innerHTML = '<span class="text-danger">Veri yüklenemedi.</span>';
+                console.error(err);
+            });
+    });
+</script>

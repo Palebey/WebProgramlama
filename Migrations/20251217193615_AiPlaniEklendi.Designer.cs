@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using web.Data;
 
@@ -11,9 +12,11 @@ using web.Data;
 namespace web.Migrations
 {
     [DbContext(typeof(SporSalonuDbContext))]
-    partial class SporSalonuDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251217193615_AiPlaniEklendi")]
+    partial class AiPlaniEklendi
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -325,27 +328,31 @@ namespace web.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<float?>("Boy")
-                        .HasColumnType("real");
+                    b.Property<int>("Boy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Cinsiyet")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Hedef")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float?>("Kilo")
-                        .HasColumnType("real");
+                    b.Property<int>("Kilo")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("OlusturulmaTarihi")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ProgramMetni")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ResimUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UyeId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
