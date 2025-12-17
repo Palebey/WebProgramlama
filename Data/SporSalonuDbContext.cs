@@ -11,5 +11,6 @@ namespace web.Data // "web" yerine proje ismini yaz
 
         // Veritabanındaki "SporSalonlari" tablosunu temsil eder
         public DbSet<SporSalonu> SporSalonlari { get; set; }
+        public DbSet<Antrenor> Antrenorler { get; set; }
     }
 }

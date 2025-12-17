@@ -15,4 +15,10 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.22" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Admin\Antrenorler\" />
+    <Folder Include="Pages\Admin\SporSalonlari\" />
+    <Folder Include="wwwroot\img\" />
+  </ItemGroup>
+
 </Project>

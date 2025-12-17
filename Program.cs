@@ -6,11 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-// --- BÝZÝM EKLEDÝÐÝMÝZ KISIM BAÞLANGIÇ ---
-// Veritabaný baðlantýsýný sisteme tanýtýyoruz (SQL Server)
+
+// Veritabaný baðlantýsý
 builder.Services.AddDbContext<SporSalonuDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SporSalonuConnection")));
-// --- BÝZÝM EKLEDÝÐÝMÝZ KISIM BÝTÝÞ ---
+
 
 var app = builder.Build();
 
