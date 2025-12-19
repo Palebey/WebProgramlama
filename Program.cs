@@ -41,7 +41,10 @@ builder.Services.AddRazorPages(options =>
 // REST API (RandevuApiController) kullanabilmek için bu servis þarttýr.
 builder.Services.AddControllers();
 // ---------------------------------------------
-builder.Services.AddHttpClient<web.Services.GeminiService>();
+builder.Services.AddHttpClient<web.Services.GroqService>(client =>
+{
+    client.Timeout = TimeSpan.FromMinutes(5); // Güvenli Timeout burada olmalý
+});
 
 var app = builder.Build();
 

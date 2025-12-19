@@ -5,48 +5,47 @@
 }
 
 <div class="container py-5 mt-5">
-    <div class="text-center mb-5">
+    <div class="text-center mb-5 animate__animated animate__fadeInDown">
         <h1 class="display-5 fw-bold text-white">Yönetici Paneli</h1>
-        <p class="text-muted">Sistemdeki içerikleri ve operasyonları buradan yönetebilirsiniz.</p>
+        <p class="text-secondary">Sistem genelindeki operasyonları ve içerikleri buradan yönetebilirsiniz.</p>
     </div>
 
     <div class="row g-4 justify-content-center">
 
         <div class="col-md-6 col-lg-4">
-            <div class="card bg-dark border-secondary h-100 shadow-lg hover-effect">
+            <div class="card bg-dark border-secondary h-100 shadow-lg hover-card position-relative overflow-hidden">
                 <div class="card-body text-center p-5">
                     <div class="icon-box bg-primary bg-opacity-10 text-primary rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
                         <span class="material-symbols-outlined fs-1">fitness_center</span>
                     </div>
                     <h3 class="card-title text-white mb-3">Spor Salonları</h3>
-                    <p class="text-muted mb-4">Sistemdeki kayıtlı spor salonlarını listele, yeni salon ekle veya mevcutları düzenle.</p>
+                    <p class="text-muted mb-4 small">Salonları listeleyin, yeni şubeler ekleyin veya mevcut bilgileri güncelleyin.</p>
                     <a asp-page="/Admin/SporSalonlari/Index" class="btn btn-outline-primary w-100 stretched-link">Yönetime Git</a>
                 </div>
             </div>
         </div>
 
         <div class="col-md-6 col-lg-4">
-            <div class="card bg-dark border-secondary h-100 shadow-lg hover-effect">
+            <div class="card bg-dark border-secondary h-100 shadow-lg hover-card position-relative overflow-hidden">
                 <div class="card-body text-center p-5">
                     <div class="icon-box bg-success bg-opacity-10 text-success rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
                         <span class="material-symbols-outlined fs-1">sports_gymnastics</span>
                     </div>
                     <h3 class="card-title text-white mb-3">Antrenörler</h3>
-                    <p class="text-muted mb-4">Eğitmen kadrosunu görüntüle, yeni antrenör profili oluştur veya sil.</p>
+                    <p class="text-muted mb-4 small">Eğitmen kadrosunu yönetin, uzmanlık alanlarını ve çalışma saatlerini düzenleyin.</p>
                     <a asp-page="/Admin/Antrenorler/Index" class="btn btn-outline-success w-100 stretched-link">Yönetime Git</a>
                 </div>
             </div>
         </div>
 
         <div class="col-md-6 col-lg-4">
-            <div class="card bg-dark border-secondary h-100 shadow-lg hover-effect">
+            <div class="card bg-dark border-secondary h-100 shadow-lg hover-card position-relative overflow-hidden">
                 <div class="card-body text-center p-5">
                     <div class="icon-box bg-warning bg-opacity-10 text-warning rounded-circle mx-auto mb-4 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
                         <span class="material-symbols-outlined fs-1">verified_user</span>
                     </div>
-                    <h3 class="card-title text-white mb-3">Randevu Talepleri</h3>
-                    <p class="text-muted mb-4">Müşterilerden gelen randevu taleplerini incele, onayla veya reddet.</p>
-
+                    <h3 class="card-title text-white mb-3">Randevular</h3>
+                    <p class="text-muted mb-4 small">Gelen randevu taleplerini inceleyin, onaylayın veya iptal edin.</p>
                     <a asp-page="/Admin/Randevular/Randevular" class="btn btn-outline-warning w-100 stretched-link">Talepleri Gör</a>
                 </div>
             </div>
@@ -55,22 +54,26 @@
     </div>
 
     <div class="text-center mt-5">
-        <a asp-page="/Index" class="text-muted text-decoration-none d-flex align-items-center justify-content-center gap-2">
-            <span class="material-symbols-outlined">arrow_back</span> Siteye Dön
+        <a asp-page="/Index" class="text-muted text-decoration-none d-flex align-items-center justify-content-center gap-2 hover-text-white">
+            <span class="material-symbols-outlined">arrow_back</span> Ana Sayfaya Dön
         </a>
     </div>
 </div>
 
 <style>
-    .hover-effect {
-        transition: transform 0.3s ease, border-color 0.3s ease;
+    /* Kart Hover Efekti */
+    .hover-card {
+        transition: all 0.3s ease;
+        top: 0;
     }
 
-        .hover-effect:hover {
+        .hover-card:hover {
             transform: translateY(-10px);
+            border-color: rgba(255,255,255,0.2) !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
         }
 
-    .btn-outline-primary.stretched-link:hover ~ .card, .btn-outline-primary:hover {
-        border-color: var(--bs-primary) !important;
+    .hover-text-white:hover {
+        color: #fff !important;
     }
 </style>

@@ -2,52 +2,79 @@
 @model web.Pages.Admin.Antrenorler.CreateModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Yeni Antrenör Ekle";
 }
 
-<h1>Create</h1>
+<div class="container py-5 mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
 
-<h4>Antrenor</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Antrenor.AdSoyad" class="control-label"></label>
-                <input asp-for="Antrenor.AdSoyad" class="form-control" />
-                <span asp-validation-for="Antrenor.AdSoyad" class="text-danger"></span>
+            <div class="card bg-dark border-secondary shadow-lg">
+                <div class="card-header bg-black bg-opacity-25 border-secondary py-3">
+                    <h4 class="m-0 text-white"><i class="bi bi-person-plus-fill me-2"></i>Yeni Antrenör Ekle</h4>
+                </div>
+
+                <div class="card-body p-4">
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Antrenor.AdSoyad" class="form-label text-secondary small text-uppercase fw-bold">Ad Soyad</label>
+                            <input asp-for="Antrenor.AdSoyad" class="form-control bg-black text-white border-secondary" placeholder="Örn: Ahmet Yılmaz" />
+                            <span asp-validation-for="Antrenor.AdSoyad" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Antrenor.Uzmanlik" class="form-label text-secondary small text-uppercase fw-bold">Uzmanlık Alanı</label>
+                            <input asp-for="Antrenor.Uzmanlik" class="form-control bg-black text-white border-secondary" placeholder="Örn: Fitness, Pilates, Kick Boks..." />
+                            <span asp-validation-for="Antrenor.Uzmanlik" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Antrenor.MesaiBaslangic" class="form-label text-secondary small text-uppercase fw-bold">Mesai Başlangıç</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-secondary text-white border-secondary"><i class="bi bi-clock"></i></span>
+                                    <input asp-for="Antrenor.MesaiBaslangic" class="form-control bg-black text-white border-secondary" type="time" />
+                                </div>
+                                <span asp-validation-for="Antrenor.MesaiBaslangic" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Antrenor.MesaiBitis" class="form-label text-secondary small text-uppercase fw-bold">Mesai Bitiş</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-secondary text-white border-secondary"><i class="bi bi-clock-history"></i></span>
+                                    <input asp-for="Antrenor.MesaiBitis" class="form-control bg-black text-white border-secondary" type="time" />
+                                </div>
+                                <span asp-validation-for="Antrenor.MesaiBitis" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Antrenor.SporSalonuId" class="form-label text-secondary small text-uppercase fw-bold">Görevli Olduğu Salon</label>
+                            <select asp-for="Antrenor.SporSalonuId" class="form-select bg-black text-white border-secondary" asp-items="ViewBag.SporSalonuId">
+                                <option value="" selected disabled>Salon Seçiniz...</option>
+                            </select>
+                            <span asp-validation-for="Antrenor.SporSalonuId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4 border-top border-secondary pt-3">
+                            <a asp-page="Index" class="btn btn-outline-secondary text-light">
+                                <i class="bi bi-arrow-left"></i> Listeye Dön
+                            </a>
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="bi bi-check-lg"></i> Kaydet
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Antrenor.Uzmanlik" class="control-label"></label>
-                <input asp-for="Antrenor.Uzmanlik" class="form-control" />
-                <span asp-validation-for="Antrenor.Uzmanlik" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Antrenor.MesaiBaslangic" class="control-label"></label>
-                <input asp-for="Antrenor.MesaiBaslangic" class="form-control" />
-                <span asp-validation-for="Antrenor.MesaiBaslangic" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Antrenor.MesaiBitis" class="control-label"></label>
-                <input asp-for="Antrenor.MesaiBitis" class="form-control" />
-                <span asp-validation-for="Antrenor.MesaiBitis" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Antrenor.SporSalonuId" class="control-label"></label>
-                <select asp-for="Antrenor.SporSalonuId" class ="form-control" asp-items="ViewBag.SporSalonuId" ></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-page="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

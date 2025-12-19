@@ -1,25 +1,48 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Ana Sayfa";
+    ViewData["Title"] = "AI Antrenör";
 }
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<style>
+    /* AI çıktısındaki listeler ve başlıklar için stil düzeltmeleri */
+    #aiOutput ul, #aiOutput ol {
+        margin-left: 20px;
+        margin-bottom: 1rem;
+    }
+
+    #aiOutput h1, #aiOutput h2, #aiOutput h3 {
+        color: #fff;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+    }
+
+    #aiOutput p {
+        margin-bottom: 1rem;
+        line-height: 1.6;
+    }
+
+    #aiOutput strong {
+        color: #0d6efd;
+    }
+    /* Vurgulanan metinleri mavi yap */
+</style>
 
 <section class="hero-section d-flex align-items-center justify-content-center py-5 mt-5">
     <div class="container text-center">
         <div class="hero-card p-4 p-md-5 rounded-4 shadow-lg mt-5">
+
             <div class="badge bg-primary bg-opacity-10 text-primary border border-primary mb-3">
-                <span class="material-symbols-outlined fs-6 align-middle">auto_awesome</span> AI Destekli Analiz
+                <span class="material-symbols-outlined fs-6 align-middle">bolt</span> Groq AI Powered
             </div>
-            <h1 class="display-4 fw-bold text-white mb-3">Gelecekteki Seni <span class="text-gradient">Tasarla</span></h1>
-            <p class="text-secondary mb-5">Vücut ölçülerinizi ve fotoğrafınızı yükleyin, yapay zeka size en uygun planı çıkarsın.</p>
+
+            <h1 class="display-4 fw-bold text-white mb-3">Yapay Zeka <span class="text-gradient">Antrenörün</span></h1>
+            <p class="text-secondary mb-5">Hedeflerini ve vücut ölçülerini gir, saniyeler içinde sana özel antrenman ve beslenme programını al.</p>
 
             <div class="card bg-dark border-secondary text-start p-4">
-                <ul class="nav nav-tabs border-bottom-0 mb-4" id="myTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active text-primary fw-bold" type="button">Vücut Bilgileri</button>
-                    </li>
-                </ul>
-
                 <form id="aiForm" enctype="multipart/form-data">
                     <div class="row g-3 mb-3">
                         <div class="col-md-4">
@@ -31,14 +54,15 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label text-uppercase text-muted fs-7">Yaş</label>
-                            <input type="number" class="form-control bg-dark text-light border-secondary" id="age" placeholder="Örn: 25" min="10" max="90">
+                            <input type="number" class="form-control bg-dark text-light border-secondary" id="age" placeholder="Örn: 23" min="10" max="90">
                         </div>
                         <div class="col-md-4">
                             <label class="form-label text-uppercase text-muted fs-7">Hedef</label>
                             <select class="form-select bg-dark text-light border-secondary" id="goal">
-                                <option value="Yağ Yakımı">Yağ Yakımı</option>
-                                <option value="Kas Kazanımı">Kas Kazanımı</option>
-                                <option value="Dayanıklılık">Dayanıklılık</option>
+                                <option value="Yağ Yakımı ve Definasyon">Yağ Yakımı</option>
+                                <option value="Kas Kütlesi Kazanımı (Bulk)">Kas Kazanımı</option>
+                                <option value="Kondisyon ve Dayanıklılık">Dayanıklılık</option>
+                                <option value="Powerlifting / Güç Odaklı">Güç Artışı</option>
                             </select>
                         </div>
                     </div>
@@ -48,45 +72,50 @@
                             <label class="form-label text-uppercase text-muted fs-7">Boy (cm)</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-dark border-secondary text-muted material-symbols-outlined">height</span>
-                                <input type="number" class="form-control bg-dark text-light border-secondary" id="height" placeholder="Örn: 175" min="100" max="250">
+                                <input type="number" class="form-control bg-dark text-light border-secondary" id="height" placeholder="180" min="100" max="250">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label text-uppercase text-muted fs-7">Kilo (kg)</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-dark border-secondary text-muted material-symbols-outlined">monitor_weight</span>
-                                <input type="number" class="form-control bg-dark text-light border-secondary" id="weight" placeholder="Örn: 70" min="30" max="300">
+                                <input type="number" class="form-control bg-dark text-light border-secondary" id="weight" placeholder="75" min="30" max="300">
                             </div>
                         </div>
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label text-uppercase text-muted fs-7">Vücut Durumu / Ekipman Fotosu (İsteğe Bağlı)</label>
-                        <input type="file" class="form-control bg-dark text-light border-secondary" id="uploadedImage" accept="image/*">
+                        <label class="form-label text-uppercase text-muted fs-7">Vücut Formu veya Ekipman Fotosu (Opsiyonel)</label>
+                        <div class="d-flex gap-2 align-items-center">
+                            <input type="file" class="form-control bg-dark text-light border-secondary" id="uploadedImage" accept="image/*">
+                            <span class="text-muted fs-7" title="AI fotoğrafı analiz ederek vücut tipine veya elindeki ekipmanlara göre öneri verir."><i class="bi bi-info-circle"></i></span>
+                        </div>
                     </div>
 
-                    <div class="mt-4 pt-3 border-top border-secondary d-flex justify-content-between align-items-center">
-                        <button type="submit" id="btnGonder" class="btn btn-primary btn-lg px-5 d-flex align-items-center gap-2 ms-auto">
+                    <div class="mt-4 pt-3 border-top border-secondary">
+                        <button type="submit" id="btnGonder" class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center gap-2">
                             <span id="loadingSpinner" class="spinner-border spinner-border-sm d-none"></span>
-                            <span id="btnText"><span class="material-symbols-outlined">auto_awesome</span> Planı Oluştur</span>
+                            <span id="btnText">Programı Oluştur</span>
                         </button>
                     </div>
                 </form>
             </div>
 
             <div id="resultArea" class="mt-5 d-none text-start">
-                <div class="card bg-dark border-success">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="m-0"><i class="bi bi-check-circle"></i> AI Tarafından Hazırlanan Plan</h5>
+                <div class="card bg-dark border-primary shadow-lg">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="m-0"><i class="bi bi-robot"></i> Senin İçin Hazırlanan Plan</h5>
+                        <small class="badge bg-white text-primary">AI Generated</small>
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-8">
-                                <pre id="aiOutput" class="text-light" style="white-space: pre-wrap; font-family: sans-serif;"></pre>
+                            <div class="col-md-12">
+                                <div id="aiOutput" class="text-light fs-6"></div>
                             </div>
-                            <div class="col-md-4">
-                                <img id="resultImage" src="" class="img-fluid rounded d-none border border-success" />
-                                <small class="text-muted d-block mt-2 text-center">Yüklenen görsel analiz için kaydedildi.</small>
+
+                            <div class="col-md-12 mt-4 text-center border-top border-secondary pt-3 d-none" id="imageContainer">
+                                <p class="text-muted mb-2">Analiz Edilen Görsel</p>
+                                <img id="resultImage" src="" class="img-fluid rounded border border-secondary" style="max-height: 300px;" />
                             </div>
                         </div>
                     </div>
@@ -97,45 +126,40 @@
     </div>
 </section>
 
-<section class="py-5">
-    <div class="container">
-    </div>
-</section>
-
 @section Scripts {
     <script>
         document.getElementById('aiForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            // Elementleri seç
+            // UI Elementleri
             const btn = document.getElementById('btnGonder');
             const spinner = document.getElementById('loadingSpinner');
             const btnText = document.getElementById('btnText');
+            const resultArea = document.getElementById('resultArea');
+            const aiOutput = document.getElementById('aiOutput');
+            const imgContainer = document.getElementById('imageContainer');
+            const resultImg = document.getElementById('resultImage');
 
-            // Yükleniyor durumuna geç
+            // Yükleniyor Animasyonu
             btn.disabled = true;
             spinner.classList.remove('d-none');
-            btnText.textContent = " Analiz Ediliyor...";
+            btnText.textContent = " AI Programı Yazıyor...";
+            resultArea.classList.add('d-none'); // Eski sonucu gizle
 
-            // Eski sonuçları gizle
-            document.getElementById('resultArea').classList.add('d-none');
-
-            // Formdaki verileri topla
+            // Form Verilerini Hazırla
             const gender = document.getElementById('gender').value;
             const age = document.getElementById('age').value;
             const goal = document.getElementById('goal').value;
             const height = document.getElementById('height').value;
             const weight = document.getElementById('weight').value;
 
-            // Yapay zeka için metin oluştur (Controller'a gidecek IstekMetni)
-            let promptText = `Cinsiyetim: ${gender}, Yaşım: ${age}, Hedefim: ${goal}.`;
-            if(height) promptText += ` Boyum: ${height}cm.`;
-            if(weight) promptText += ` Kilom: ${weight}kg.`;
+            // Prompt Metnini Oluştur
+            let promptText = `Cinsiyet: ${gender}, Yaş: ${age}, Hedef: ${goal}.`;
+            if(height) promptText += ` Boy: ${height}cm.`;
+            if(weight) promptText += ` Kilo: ${weight}kg.`;
 
-            // FormData oluştur
             const formData = new FormData();
-            formData.append('IstekMetni', promptText); // Oluşturduğumuz metin
-
+            formData.append('IstekMetni', promptText);
             if(height) formData.append('Boy', height);
             if(weight) formData.append('Kilo', weight);
 
@@ -145,44 +169,55 @@
             }
 
             try {
-                // Controller'a istek at
+                // API İsteği
                 const response = await fetch('/api/yapayzeka/plan-olustur', {
                     method: 'POST',
                     body: formData
                 });
 
-                if (!response.ok) {
-                    const errData = await response.json();
-                    throw new Error(errData.mesaj || "Sunucu hatası");
-                }
+                       if (!response.ok) {
+            // Sunucudan gelen gerçek hata metnini okumaya çalışalım
+            let errorMessage = "Sunucu hatası";
+            try {
+                const errData = await response.json();
+                errorMessage = errData.mesaj || errData.detay || JSON.stringify(errData);
+            } catch (parseError) {
+                // JSON değilse düz metin olarak okuyalım
+                errorMessage = await response.text();
+            }
+            throw new Error(errorMessage);
+        }
 
                 const result = await response.json();
 
                 if (result.success) {
-                    // Sonucu göster
-                    document.getElementById('resultArea').classList.remove('d-none');
-                    document.getElementById('aiOutput').textContent = result.data;
+                    // 1. Sonuç Alanını Aç
+                    resultArea.classList.remove('d-none');
 
-                    const img = document.getElementById('resultImage');
+                    // 2. MARKDOWN'I HTML'E ÇEVİR VE YAZDIR (Önemli Kısım)
+                    // marked.parse() fonksiyonu gelen markdown metnini <h3>, <ul>, <li> gibi HTML'e çevirir.
+                    aiOutput.innerHTML = marked.parse(result.data);
+
+                    // 3. Resim Varsa Göster
                     if (result.imageUrl) {
-                        img.src = result.imageUrl;
-                        img.classList.remove('d-none');
+                        resultImg.src = result.imageUrl;
+                        imgContainer.classList.remove('d-none');
                     } else {
-                        img.classList.add('d-none');
+                        imgContainer.classList.add('d-none');
                     }
 
-                    // Sonuca doğru kaydır
-                    document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
+                    // 4. Sonuca Kaydır
+                    resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
 
             } catch (error) {
-                console.error('Hata:', error);
-                alert("Hata oluştu: " + error.message);
+                console.error(error);
+                alert("Bir hata oluştu: " + error.message);
             } finally {
-                // Butonu eski haline getir
+                // Butonu Sıfırla
                 btn.disabled = false;
                 spinner.classList.add('d-none');
-                btnText.innerHTML = '<span class="material-symbols-outlined">auto_awesome</span> Planı Oluştur';
+                btnText.textContent = "Programı Oluştur";
             }
         });
     </script>

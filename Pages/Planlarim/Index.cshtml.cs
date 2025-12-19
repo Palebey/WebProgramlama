@@ -1,11 +1,15 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using web.Data;
 using web.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace web.Pages.Planlarim
 {
+    [Authorize] // Sadece giriþ yapmýþ üyeler girebilir
     public class IndexModel : PageModel
     {
         private readonly SporSalonuDbContext _context;
@@ -15,17 +19,28 @@ namespace web.Pages.Planlarim
             _context = context;
         }
 
-        // View tarafýnda kullandýðýn Property
-        public YapayZekaPlani? MevcutPlan { get; set; }
+        // Tek bir plan yerine bir liste tutalým, böylece geçmiþi de listeleriz
+        public IList<YapayZekaPlani> GecmisPlanlar { get; set; } = new List<YapayZekaPlani>();
+
+        // Ekranda detayýný göstereceðimiz en son plan
+        public YapayZekaPlani? EnSonPlan { get; set; }
 
         public async Task OnGetAsync()
         {
-            // Veritabanýndan en son oluþturulan planý getiriyoruz.
-            // Eðer giriþ yapmýþ kullanýcýya özel olsun istersen Where(x => x.UyeId == User.Identity.Name) ekleyebilirsin.
-            // Þimdilik en son eklenen planý getiriyoruz:
-            MevcutPlan = await _context.YapayZekaPlanlari
-                                       .OrderByDescending(p => p.OlusturulmaTarihi)
-                                       .FirstOrDefaultAsync();
+            // 1. Giriþ yapan kullanýcýnýn kimliðini al
+            var uyeId = User.Identity?.Name;
+
+            if (!string.IsNullOrEmpty(uyeId))
+            {
+                // 2. SADECE bu kullanýcýya ait planlarý çek (Sorunu çözen satýr burasý)
+                GecmisPlanlar = await _context.YapayZekaPlanlari
+                                              .Where(x => x.UyeId == uyeId) // <-- FÝLTRELEME
+                                              .OrderByDescending(x => x.OlusturulmaTarihi)
+                                              .ToListAsync();
+
+                // Listenin ilk elemaný en güncel plandýr
+                EnSonPlan = GecmisPlanlar.FirstOrDefault();
+            }
         }
     }
 }

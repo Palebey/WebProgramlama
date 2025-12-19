@@ -2,54 +2,66 @@
 @model web.Pages.Admin.SporSalonlari.DetailsModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Salon Detayı";
 }
 
-<h1>Details</h1>
+<div class="container py-5 mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
 
-<div>
-    <h4>SporSalonu</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SporSalonu.Ad)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SporSalonu.Ad)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SporSalonu.Aciklama)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SporSalonu.Aciklama)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SporSalonu.Hizmetler)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SporSalonu.Hizmetler)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SporSalonu.AcilisSaati)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SporSalonu.AcilisSaati)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SporSalonu.KapanisSaati)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SporSalonu.KapanisSaati)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SporSalonu.UyelikUcreti)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SporSalonu.UyelikUcreti)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.SporSalonu.Id">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
+            <div class="card bg-dark border-secondary shadow-lg">
+                <div class="card-header border-secondary p-4 text-center bg-black bg-opacity-25">
+                    <div class="icon-box bg-primary bg-opacity-10 text-primary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <span class="material-symbols-outlined fs-1">fitness_center</span>
+                    </div>
+                    <h2 class="text-white mb-0">@Html.DisplayFor(model => model.SporSalonu.Ad)</h2>
+                    <span class="badge bg-secondary mt-2">ID: @Model.SporSalonu.Id</span>
+                </div>
+
+                <div class="card-body p-4">
+                    <div class="row g-4">
+
+                        <div class="col-12">
+                            <label class="text-secondary small text-uppercase fw-bold d-block mb-1">Açıklama</label>
+                            <p class="text-white bg-black bg-opacity-25 p-3 rounded border border-secondary">
+                                @Html.DisplayFor(model => model.SporSalonu.Aciklama)
+                            </p>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="text-secondary small text-uppercase fw-bold d-block mb-1">Hizmetler</label>
+                            <div class="text-info">
+                                <i class="bi bi-stars me-1"></i> @Html.DisplayFor(model => model.SporSalonu.Hizmetler)
+                            </div>
+                        </div>
+
+                        <hr class="border-secondary my-4" />
+
+                        <div class="col-md-4 text-center border-end border-secondary">
+                            <label class="text-secondary small text-uppercase fw-bold d-block mb-1">Açılış</label>
+                            <span class="fs-5 text-white fw-bold">@Html.DisplayFor(model => model.SporSalonu.AcilisSaati)</span>
+                        </div>
+                        <div class="col-md-4 text-center border-end border-secondary">
+                            <label class="text-secondary small text-uppercase fw-bold d-block mb-1">Kapanış</label>
+                            <span class="fs-5 text-white fw-bold">@Html.DisplayFor(model => model.SporSalonu.KapanisSaati)</span>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <label class="text-secondary small text-uppercase fw-bold d-block mb-1">Üyelik Ücreti</label>
+                            <span class="fs-4 text-success fw-bold">@Html.DisplayFor(model => model.SporSalonu.UyelikUcreti) ₺</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-black bg-opacity-25 border-secondary p-3 d-flex justify-content-between">
+                    <a asp-page="./Index" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-arrow-left"></i> Geri Dön
+                    </a>
+                    <a asp-page="./Edit" asp-route-id="@Model.SporSalonu.Id" class="btn btn-warning btn-sm fw-bold">
+                        <i class="bi bi-pencil-square"></i> Düzenle
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>

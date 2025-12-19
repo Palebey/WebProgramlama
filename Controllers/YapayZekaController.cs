@@ -10,13 +10,14 @@ namespace web.Controllers
     [ApiController]
     public class YapayZekaController : ControllerBase
     {
-        private readonly GeminiService _geminiService;
+        // Değişiklik: GeminiService -> GroqService
+        private readonly GroqService _aiService;
         private readonly IWebHostEnvironment _env;
         private readonly SporSalonuDbContext _context;
 
-        public YapayZekaController(GeminiService geminiService, IWebHostEnvironment env, SporSalonuDbContext context)
+        public YapayZekaController(GroqService aiService, IWebHostEnvironment env, SporSalonuDbContext context)
         {
-            _geminiService = geminiService;
+            _aiService = aiService;
             _env = env;
             _context = context;
         }
@@ -25,7 +26,6 @@ namespace web.Controllers
         [HttpPost("plan-olustur")]
         public async Task<IActionResult> Olustur([FromForm] YapayZekaTalepDto talep)
         {
-            // Validasyon
             if (string.IsNullOrEmpty(talep.IstekMetni))
             {
                 return BadRequest(new { mesaj = "Lütfen hedefinizi yazın." });
@@ -37,10 +37,9 @@ namespace web.Controllers
                 byte[]? imageBytes = null;
                 string? mimeType = null;
 
-                // 1. Resim İşleme (Güvenlik Önlemli)
+                // 1. Resim İşleme
                 if (talep.Gorsel != null && talep.Gorsel.Length > 0)
                 {
-                    // Önce dosyayı RAM'e (Byte Array) alalım
                     using (var memoryStream = new MemoryStream())
                     {
                         await talep.Gorsel.CopyToAsync(memoryStream);
@@ -48,25 +47,28 @@ namespace web.Controllers
                         mimeType = talep.Gorsel.ContentType;
                     }
 
-                    // Diske kaydetmek için klasör yolu
                     var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads");
                     if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
 
                     var fileName = Guid.NewGuid().ToString() + Path.GetExtension(talep.Gorsel.FileName);
                     var filePath = Path.Combine(uploadsFolder, fileName);
 
-                    // Diske yazma (Akış hatası olmaması için byte array'den yazıyoruz)
                     await System.IO.File.WriteAllBytesAsync(filePath, imageBytes);
-
                     kaydedilenResimYolu = "/uploads/" + fileName;
                 }
 
-                // 2. Gemini Yapay Zeka Çağrısı
-                string prompt = $"Sen profesyonel bir spor koçusun. Kullanıcı Hedefi: {talep.IstekMetni}. ";
-                if (talep.Boy > 0 && talep.Kilo > 0) prompt += $"Kullanıcı Boyu: {talep.Boy} cm, Kilosu: {talep.Kilo} kg. ";
-                if (imageBytes != null) prompt += "Lütfen yüklenen vücut/malzeme görselini de analiz ederek tavsiye ver.";
+                // 2. Groq AI Çağrısı (Prompt Hazırlama)
+                string prompt = $"Sen deneyimli bir spor koçusun. Lütfen şu isteğe göre Markdown formatında, okunabilir bir program hazırla.\n\n" +
+                                $"Kullanıcı Hedefi: {talep.IstekMetni}. ";
 
-                var aiCevabi = await _geminiService.GetProgramFromGemini(prompt, imageBytes, mimeType);
+                if (talep.Boy > 0 && talep.Kilo > 0)
+                    prompt += $"Kullanıcı Boyu: {talep.Boy} cm, Kilosu: {talep.Kilo} kg. ";
+
+                if (imageBytes != null)
+                    prompt += "Ek olarak; yüklenen fotoğraftaki vücut tipini veya ekipmanları analiz ederek buna uygun özel tavsiyeler ekle.";
+
+                // Servis çağrısı
+                var aiCevabi = await _aiService.GetProgramFromAi(prompt, imageBytes, mimeType);
 
                 // 3. Veritabanına Kayıt
                 var yeniPlan = new YapayZekaPlani
@@ -76,14 +78,13 @@ namespace web.Controllers
                     ResimUrl = kaydedilenResimYolu,
                     Boy = talep.Boy,
                     Kilo = talep.Kilo,
-                    UyeId = "Misafir",
+                    UyeId = User.Identity?.Name ?? "Misafir", // Giriş yapmışsa email, yoksa misafir
                     OlusturulmaTarihi = DateTime.Now
                 };
 
                 _context.YapayZekaPlanlari.Add(yeniPlan);
                 await _context.SaveChangesAsync();
 
-                // 4. Sonucu Döndür
                 return Ok(new
                 {
                     success = true,
@@ -93,22 +94,32 @@ namespace web.Controllers
             }
             catch (Exception ex)
             {
-                // Hatayı konsolda görebilmek için
-                Console.WriteLine("HATA OLUŞTU: " + ex.Message);
                 return StatusCode(500, new { mesaj = "Sunucu hatası", detay = ex.Message });
             }
         }
 
-        // GET: api/YapayZeka/gecmis-planlar
+        // GET: api/YapayZeka/gecmis-planlar (Değişiklik yok, aynen kalabilir)
         [HttpGet("gecmis-planlar")]
         public async Task<IActionResult> GetGecmisPlanlar()
         {
+            // 1. O an giriş yapmış kullanıcının adını/mailini al
+            var aktifKullanici = User.Identity?.Name;
+
+            // Eğer giriş yapmamışsa boş liste döndür (Güvenlik)
+            if (string.IsNullOrEmpty(aktifKullanici))
+            {
+                return Ok(new List<object>());
+            }
+
+            // 2. Veritabanından SADECE bu kullanıcıya ait (Where şartı) planları getir
             var planlar = await _context.YapayZekaPlanlari
+                                        .Where(p => p.UyeId == aktifKullanici) // <-- İŞTE SİHİRLİ KOD BURASI
                                         .OrderByDescending(p => p.OlusturulmaTarihi)
                                         .Take(5)
                                         .Select(p => new {
                                             p.Id,
                                             p.Hedef,
+                                            // Özet metni
                                             Ozet = p.ProgramMetni.Length > 50 ? p.ProgramMetni.Substring(0, 50) + "..." : p.ProgramMetni,
                                             p.OlusturulmaTarihi,
                                             p.ResimUrl
@@ -119,7 +130,6 @@ namespace web.Controllers
         }
     }
 
-    // DTO Sınıfı
     public class YapayZekaTalepDto
     {
         public string IstekMetni { get; set; }
